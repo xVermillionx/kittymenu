@@ -144,12 +144,22 @@ int highlight = 1;
       std::stringstream cmd;
       std::stringstream cmd2;
 
-      title << "(" << count << ")\t" << y["id"].asInt() << ": " << y["title"].asString() << (y["is_focused"].asBool() ? "*" : "");
-      // title << "(" << count << ")\t" << y["id"] << ": " << y["title"].asString() << (y["is_focused"].asBool() ? "*" : "") << " " << y["window"].size() << " windows";
+      // title << "(" << count << ")\t" << y["id"].asInt() << ": " << y["title"].asString() << (y["is_focused"].asBool() ? "*" : "");
+      title << "(" << count << ")\t" << y["id"] << ": ";
+
+      // title << y["title"].asString();
+
+      for (auto z = y["windows"].begin(); z != y["windows"].end(); z++)
+      {
+        title << (*z)["title"].asString();
+        if((std::next(z)) != y["windows"].end()) title << " | ";
+      }
+
+      title << (y["is_focused"].asBool() ? " * " : " ") << y["windows"].size() << " windows";
       // cmd << "kitty @ resize-window -m " << gotomatch[2] << ":" << y["windows"][0][gotomatch[2]];
       cmd << "kitty @ focus-window -m " << gotomatch[2] << ":" << y["windows"][0][gotomatch[2]];
       cmd2 << "kitty @ close-tab -m " << gotomatch[2] << ":" << y["windows"][0][gotomatch[2]];
-      
+
       count++;
       if (y["is_focused"].asBool())
       {
@@ -159,7 +169,7 @@ int highlight = 1;
       std::string titlestr = title.str();
       std::string cmdstr = cmd.str();
       std::string cmdstr2 = cmd2.str();
-/* 
+/*
       std::string xcmdstr = std::string("") + cmdstr;
       char *cmdcstr = new char[xcmdstr.length()];
       strcpy(cmdcstr, xcmdstr.c_str()); */
